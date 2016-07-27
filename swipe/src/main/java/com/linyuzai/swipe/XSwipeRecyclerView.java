@@ -78,7 +78,10 @@ public class XSwipeRecyclerView extends LinearLayout {
             return false;
         if (x < positions[0])
             return true;
-        View pointSwipeView = swipeRecyclerView.findChildViewUnder(x, y).findViewById(adapter.getSwipeViewId());
+        View itemView = swipeRecyclerView.findChildViewUnder(x, y);
+        if (itemView == null)
+            return false;
+        View pointSwipeView = itemView.findViewById(adapter.getSwipeViewId());
         if (openSwipeView == pointSwipeView)
             return false;
         return true;
