@@ -51,7 +51,7 @@ public class XSwipeRecyclerView extends LinearLayout {
             case MotionEvent.ACTION_DOWN:
                 if (isPointToClose(ev.getX(), ev.getY())) {
                     isUpAfterOpen = true;
-                    closeAll();
+                    adapter.closeAll();
                     return true;
                 }
                 break;
@@ -87,15 +87,14 @@ public class XSwipeRecyclerView extends LinearLayout {
         return true;
     }
 
-    public void closeAll() {
-        Iterator viewSet = adapter.getSwipeViewSet().iterator();
-        while (viewSet.hasNext()) {
-            View view = (View) viewSet.next();
-            ((SwipeLayout) view.getParent()).close();
-        }
-    }
-
     public static abstract class XSwipeAdapter extends SwipeRecyclerView.SwipeAdapter {
 
+        public void closeAll() {
+            Iterator viewSet = swipeViewSet.iterator();
+            while (viewSet.hasNext()) {
+                View view = (View) viewSet.next();
+                ((SwipeLayout) view.getParent()).close();
+            }
+        }
     }
 }

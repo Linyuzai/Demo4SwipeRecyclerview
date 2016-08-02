@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,14 +37,24 @@ public class SwipeRecyclerView extends RecyclerView {
     }
 
     public static abstract class SwipeAdapter extends Adapter {
-        private Set<View> swipeViewSet;
+        protected Set<View> swipeViewSet;
 
-        private FrameLayout.LayoutParams defaultParams;
-        private FrameLayout.LayoutParams swipeParams;
+        private OnSwipeItemClickListener listener;
 
         public SwipeAdapter() {
             swipeViewSet = new HashSet<>();
-            defaultParams = new FrameLayout.LayoutParams(0, 0);
+        }
+
+        public Set<View> getSwipeViewSet() {
+            return swipeViewSet;
+        }
+
+        public OnSwipeItemClickListener getListener() {
+            return listener;
+        }
+
+        public void setListener(OnSwipeItemClickListener listener) {
+            this.listener = listener;
         }
 
         @Override
@@ -57,14 +66,6 @@ public class SwipeRecyclerView extends RecyclerView {
         public void onBindViewHolder(ViewHolder holder, int position) {
             ((SwipeViewHolder) holder).position = position;
             if (((SwipeViewHolder) holder).swipeLayout != null) {
-                /*View swipeView = ((SwipeViewHolder) holder).swipeLayout.findViewById(getSwipeViewId());
-                if (isItemSwipeSupported(position)) {
-                    if (swipeParams == null)
-                        swipeParams = (FrameLayout.LayoutParams) swipeView.getLayoutParams();
-                    else
-                        swipeView.setLayoutParams(swipeParams);
-                } else
-                    ((SwipeViewHolder) holder).swipeLayout.setLayoutParams(defaultParams);*/
                 ((SwipeViewHolder) holder).swipeLayout.close(false);
             }
             onBindSwipeViewHolder((SwipeViewHolder) holder, position);
@@ -80,18 +81,15 @@ public class SwipeRecyclerView extends RecyclerView {
 
         /**
          * this method is standing off
-         * 该方法暂时不用
+         * 该方法暂时无用
          *
          * @param position
          * @return
          */
+        @Deprecated
         public abstract boolean isItemSwipeSupported(int position);
 
-        public Set<View> getSwipeViewSet() {
-            return swipeViewSet;
-        }
-
-        public class SwipeViewHolder extends ViewHolder implements SwipeLayout.SwipeListener {
+        public class SwipeViewHolder extends ViewHolder implements OnClickListener, SwipeLayout.SwipeListener {
             public int position;
             public SwipeLayout swipeLayout;
 
@@ -101,7 +99,14 @@ public class SwipeRecyclerView extends RecyclerView {
                 if (swipeLayout != null) {
                     swipeLayout.addDrag(SwipeLayout.DragEdge.Right, getSwipeViewId());
                     swipeLayout.addSwipeListener(this);
+                    swipeLayout.getSurfaceView().setOnClickListener(this);
                 }
+            }
+
+            @Override
+            public void onClick(View v) {
+                if (listener != null)
+                    listener.onSwipeItemClick(position);
             }
 
             @Override
@@ -134,5 +139,9 @@ public class SwipeRecyclerView extends RecyclerView {
 
             }
         }
+    }
+
+    public interface OnSwipeItemClickListener {
+        void onSwipeItemClick(int position);
     }
 }
