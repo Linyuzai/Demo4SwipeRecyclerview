@@ -6,7 +6,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -88,13 +87,8 @@ public class XSwipeRecyclerView extends LinearLayout {
     }
 
     public static abstract class XSwipeAdapter extends SwipeRecyclerView.SwipeAdapter {
-
-        public void closeAll() {
-            Iterator viewSet = swipeViewSet.iterator();
-            while (viewSet.hasNext()) {
-                View view = (View) viewSet.next();
-                ((SwipeLayout) view.getParent()).close();
-            }
+        public void showItem(int position) {
+            swipeRecyclerView.smoothScrollToPosition(position);
         }
     }
 }

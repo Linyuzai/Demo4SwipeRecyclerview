@@ -28,37 +28,43 @@ public abstract class SimpleSwipeAdapter<T> extends XSwipeRecyclerView.XSwipeAda
         if (position >= dataList.size())
             throw new ArrayIndexOutOfBoundsException(position);
         closeAll();
+        swipeViewSet.clear();
         dataList.remove(position);
         notifyItemRemoved(position);
-        if (position != dataList.size())      // 这个判断的意义就是如果移除的是最后一个，就不用管它了
+        if (position != dataList.size() - 1)      // 这个判断的意义就是如果移除的是最后一个，就不用管它了
             notifyItemRangeChanged(position, dataList.size() - position);
-        swipeViewSet.clear();
     }
 
-    /**
-     * not test
-     *
-     * @param position
-     * @param object
-     */
     public void notifyDataUpdated(int position, T object) {
         if (position >= dataList.size())
             throw new ArrayIndexOutOfBoundsException(position);
+        closeAll();
+        swipeViewSet.clear();
         dataList.remove(position);
         dataList.add(position, object);
         notifyItemChanged(position);
     }
 
-    /**
-     * not test
-     *
-     * @param position
-     * @param object
-     */
-    public void notifyDataAdded(int position, T object) {
-        if (position >= dataList.size())
-            throw new ArrayIndexOutOfBoundsException(position);
+    public void notifyDataAdded(int position, T object, boolean smoothToShow) {
+        closeAll();
+        swipeViewSet.clear();
         dataList.add(position, object);
         notifyItemInserted(position);
+        if (position != dataList.size() - 1)
+            notifyItemRangeChanged(position, dataList.size() - position);
+        if (smoothToShow)
+            showItem(position);
+    }
+
+    public void notifyDataAdded(int position, T object) {
+        notifyDataAdded(position, object, false);
+    }
+
+    public void notifyDataAdded(T object, boolean smoothToShow) {
+        notifyDataAdded(dataList.size(), object, smoothToShow);
+    }
+
+    public void notifyDataAdded(T object) {
+        notifyDataAdded(object, false);
     }
 }

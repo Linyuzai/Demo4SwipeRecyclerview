@@ -5,10 +5,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -36,7 +38,24 @@ public class SwipeRecyclerView extends RecyclerView {
         setLayoutManager(new LinearLayoutManager(context));
     }
 
+    @Override
+    public void setAdapter(Adapter adapter) {
+        if (adapter instanceof SwipeAdapter) {
+            ((SwipeAdapter) adapter).swipeRecyclerView = this;
+            Log.e(TAG, ((SwipeAdapter) adapter).swipeRecyclerView + "");
+            super.setAdapter(adapter);
+        } else
+            throw new IllegalArgumentException("you need use SwipeRecyclerView.SwipeAdapter or its subclass instead of RecyclerView.Adapter");
+    }
+
+    @Override
+    public SwipeAdapter getAdapter() {
+        return (SwipeAdapter) super.getAdapter();
+    }
+
     public static abstract class SwipeAdapter extends Adapter {
+        protected SwipeRecyclerView swipeRecyclerView;
+
         protected Set<View> swipeViewSet;
 
         private OnSwipeItemClickListener listener;
@@ -49,12 +68,20 @@ public class SwipeRecyclerView extends RecyclerView {
             return swipeViewSet;
         }
 
-        public OnSwipeItemClickListener getListener() {
+        public OnSwipeItemClickListener getOnSwipeItemClickListener() {
             return listener;
         }
 
-        public void setListener(OnSwipeItemClickListener listener) {
+        public void setOnSwipeItemClickListener(OnSwipeItemClickListener listener) {
             this.listener = listener;
+        }
+
+        public void closeAll() {
+            Iterator viewSet = swipeViewSet.iterator();
+            while (viewSet.hasNext()) {
+                View view = (View) viewSet.next();
+                ((SwipeLayout) view.getParent()).close();
+            }
         }
 
         @Override
@@ -67,6 +94,7 @@ public class SwipeRecyclerView extends RecyclerView {
             ((SwipeViewHolder) holder).position = position;
             if (((SwipeViewHolder) holder).swipeLayout != null) {
                 ((SwipeViewHolder) holder).swipeLayout.close(false);
+                ((SwipeViewHolder) holder).swipeLayout.setSwipeEnabled(isSwipeEnable(position));
             }
             onBindSwipeViewHolder((SwipeViewHolder) holder, position);
         }
@@ -80,14 +108,10 @@ public class SwipeRecyclerView extends RecyclerView {
         public abstract int getSwipeViewId();
 
         /**
-         * this method is standing off
-         * 该方法暂时无用
-         *
          * @param position
          * @return
          */
-        @Deprecated
-        public abstract boolean isItemSwipeSupported(int position);
+        public abstract boolean isSwipeEnable(int position);
 
         public class SwipeViewHolder extends ViewHolder implements OnClickListener, SwipeLayout.SwipeListener {
             public int position;

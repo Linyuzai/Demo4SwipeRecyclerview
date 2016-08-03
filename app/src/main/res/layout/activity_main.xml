@@ -10,19 +10,25 @@
         android:id="@+id/bt1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="delete" />
+        android:text="delete 1" />
 
     <Button
         android:id="@+id/bt2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="change" />
+        android:text="change 2" />
 
     <Button
         android:id="@+id/bt3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="add" />
+        android:text="add 0" />
+
+    <Button
+        android:id="@+id/bt4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="add last" />
 
     <com.linyuzai.swipe.XSwipeRecyclerView
         android:id="@+id/swipe_recycler_view"

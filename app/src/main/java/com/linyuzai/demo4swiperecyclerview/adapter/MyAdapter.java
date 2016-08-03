@@ -41,7 +41,9 @@ public class MyAdapter extends SimpleSwipeAdapter<String> {
     }
 
     @Override
-    public boolean isItemSwipeSupported(int position) {
+    public boolean isSwipeEnable(int position) {
+        if (position == 1)
+            return false;
         return true;
     }
 

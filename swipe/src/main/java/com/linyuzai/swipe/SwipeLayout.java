@@ -679,7 +679,7 @@ public class SwipeLayout extends FrameLayout {
     private List<OnLayout> mOnLayoutListeners;
 
     public void addOnLayoutListener(OnLayout l) {
-        if (mOnLayoutListeners == null) mOnLayoutListeners = new ArrayList<OnLayout>();
+        if (mOnLayoutListeners == null) mOnLayoutListeners = new ArrayList<>();
         mOnLayoutListeners.add(l);
     }
 
