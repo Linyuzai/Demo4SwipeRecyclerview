@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -77,9 +76,12 @@ public class SwipeRecyclerView extends RecyclerView {
         }
 
         public void closeAll() {
-            Iterator viewSet = swipeViewSet.iterator();
+            /*Iterator viewSet = swipeViewSet.iterator();
             while (viewSet.hasNext()) {
                 View view = (View) viewSet.next();
+                ((SwipeLayout) view.getParent()).close();
+            }*/
+            for (View view : swipeViewSet) {
                 ((SwipeLayout) view.getParent()).close();
             }
         }
